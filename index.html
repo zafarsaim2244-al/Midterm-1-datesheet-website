@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BSCS Semester 3 — Midterm-I Exam Countdown (Fall 2026)</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --card-bg: rgba(11, 19, 32, 0.72);
+      --card-border: rgba(255, 255, 255, 0.12);
+      --text-main: #f8fafc;
+      --text-muted: #cbd5e1;
+      --accent-teal: #14b8a6;
+      --completed-card: rgba(15, 23, 42, 0.6);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+      padding: 1.5rem 1rem;
+      position: relative;
+      background-color: #040810;
+      overflow-x: hidden;
+    }
+
+    /* FULLSCREEN LIVE GIF WALLPAPER */
+    .bg-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -2;
+      overflow: hidden;
+    }
+
+    .bg-gif {
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      filter: brightness(0.85) contrast(1.1);
+    }
+
+    /* OVERLAY FOR READABILITY */
+    .bg-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(4, 8, 16, 0.45);
+      backdrop-filter: blur(2px);
+      z-index: -1;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
+      flex: 1;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* TOP UTILITY BAR */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(12px);
+      padding: 0.6rem 1.25rem;
+      border-radius: 50px;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+    }
+
+    .live-clock {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-muted);
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--accent-teal);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--accent-teal);
+      animation: pulse 1.5s infinite;
+    }
+
+    .audio-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn-toggle {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .btn-toggle:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: var(--accent-teal);
+    }
+
+    /* HEADER */
+    header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      color: #ffffff;
+      margin-bottom: 0.4rem;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* QUOTE BANNER CARD */
+    .quote-card {
+      background: rgba(20, 184, 166, 0.12);
+      border: 1px solid rgba(20, 184, 166, 0.3);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      margin-bottom: 1.75rem;
+      text-align: center;
+      min-height: 72px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(12px);
+    }
+
+    .quote-text {
+      font-size: 0.95rem;
+      font-style: italic;
+      color: #ccfbf1;
+      margin-bottom: 0.25rem;
+      transition: opacity 0.5s ease-in-out;
+    }
+
+    .quote-author {
+      font-size: 0.75rem;
+      color: var(--accent-teal);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* PROGRESS BAR */
+    .progress-container {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 2rem;
+      backdrop-filter: blur(12px);
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-muted);
+    }
+
+    .progress-bar-bg {
+      background: rgba(255, 255, 255, 0.1);
+      height: 8px;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #0d9488, var(--accent-teal));
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+
+    /* HERO COUNTDOWN DISPLAY */
+    .hero-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(16px);
+      border-radius: 20px;
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+      position: relative;
+    }
+
+    .hero-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 15%;
+      right: 15%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent-teal), transparent);
+    }
+
+    .target-badge {
+      display: inline-block;
+      background: rgba(20, 184, 166, 0.15);
+      border: 1px solid rgba(20, 184, 166, 0.4);
+      color: var(--accent-teal);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.75rem;
+      border-radius: 30px;
+      margin-bottom: 1rem;
+    }
+
+    .target-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+
+    .target-time {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.75rem;
+    }
+
+    /* TIMER GRID */
+    .timer-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      max-width: 580px;
+      margin: 0 auto;
+    }
+
+    .timer-box {
+      background: rgba(4, 8, 16, 0.65);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 1.2rem 0.5rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .timer-number {
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .timer-unit {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-top: 0.6rem;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+    }
+
+    /* SCHEDULE LIST */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .btn-print {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 0.35rem 0.8rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.2s;
+    }
+
+    .btn-print:hover {
+      color: var(--text-main);
+      border-color: var(--accent-teal);
+    }
+
+    .schedule-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .exam-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(12px);
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      position: relative;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .exam-card.active {
+      border-color: var(--accent-teal);
+      box-shadow: 0 0 20px rgba(20, 184, 166, 0.25);
+      background: rgba(11, 19, 32, 0.85);
+    }
+
+    .exam-card.completed {
+      background: var(--completed-card);
+      border-color: transparent;
+      opacity: 0.65;
+    }
+
+    .badge-status {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.5rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.25rem 0.65rem;
+      border-radius: 20px;
+      text-transform: uppercase;
+    }
+
+    .exam-card.active .badge-status {
+      background: var(--accent-teal);
+      color: #000;
+    }
+
+    .exam-card.completed .badge-status {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+    }
+
+    .exam-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      padding-right: 5rem;
+    }
+
+    .exam-card.completed .exam-title {
+      text-decoration: line-through;
+    }
+
+    .exam-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.25rem;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .exam-gap {
+      margin-top: 0.85rem;
+      padding-top: 0.85rem;
+      border-top: 1px dashed var(--card-border);
+      font-size: 0.8rem;
+      color: var(--accent-teal);
+      font-weight: 500;
+    }
+
+    .exam-card.completed .exam-gap { display: none; }
+
+    /* DASHBOARD TIPS CARD */
+    .tips-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(12px);
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+      font-size: 0.88rem;
+    }
+
+    .tips-card h3 {
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--accent-teal);
+    }
+
+    .tips-card ul {
+      padding-left: 1.2rem;
+      color: var(--text-muted);
+    }
+
+    .tips-card li { margin-bottom: 0.25rem; }
+
+    /* FOOTER & DEVELOPER CREDIT */
+    footer {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--card-border);
+    }
+
+    .developer-tag {
+      margin-top: 0.6rem;
+      display: inline-block;
+      font-size: 0.8rem;
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--card-border);
+      padding: 0.35rem 0.9rem;
+      border-radius: 30px;
+      backdrop-filter: blur(10px);
+    }
+
+    .developer-tag span {
+      color: var(--accent-teal);
+      font-weight: 700;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 640px) {
+      body { padding: 1rem 0.75rem; }
+      .top-bar { flex-direction: column; gap: 0.5rem; border-radius: 14px; text-align: center; }
+      .timer-grid { gap: 0.5rem; }
+      .timer-number { font-size: 2rem; }
+      .exam-title { padding-right: 0; }
+      .badge-status { position: static; display: inline-block; margin-top: 0.5rem; }
+    }
+
+    @media print {
+      body { background: #fff; color: #000; }
+      .bg-container, .bg-overlay, .top-bar, .quote-card, .btn-print, .tips-card { display: none; }
+      .exam-card { border: 1px solid #ccc; page-break-inside: avoid; color: #000; }
+      .exam-title { color: #000; }
+      .exam-meta { color: #444; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LIVE BACKGROUND GIF WALLPAPER -->
+  <div class="bg-container">
+    <img src="hourglass.gif" class="bg-gif" alt="Live Hourglass Background">
+  </div>
+  <div class="bg-overlay"></div>
+
+  <div class="container">
+    <!-- TOP LIVE UTILITY BAR -->
+    <div class="top-bar">
+      <div class="live-clock">
+        <div class="live-dot"></div>
+        <span>PST Clock: <strong id="pst-clock" style="color:var(--text-main);">--:--:-- PM</strong></span>
+      </div>
+      <div class="audio-controls">
+        <button class="btn-toggle" onclick="testAlarm()">🔊 Test Sound</button>
+        <button class="btn-toggle" id="sound-toggle-btn" onclick="toggleSound()">🔔 Alarm: ON</button>
+      </div>
+    </div>
+
+    <header>
+      <h1>BSCS Semester 3 — Midterm-I Exam Countdown</h1>
+      <p>Department of Computer Science • Fall 2026</p>
+    </header>
+
+    <!-- MOTIVATIONAL TIME QUOTES BANNER -->
+    <div class="quote-card">
+      <div class="quote-text" id="quote-text">"Time is like sand in an hourglass; it slips away smoothly, second by second."</div>
+      <div class="quote-author" id="quote-author">— Academic Discipline</div>
+    </div>
+
+    <!-- OVERALL PROGRESS BAR -->
+    <div class="progress-container">
+      <div class="progress-header">
+        <span>Overall Midterm Completion</span>
+        <span id="progress-text">0 of 5 Completed (0%)</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-fill"></div>
+      </div>
+    </div>
+
+    <!-- MAIN COUNTDOWN DISPLAY -->
+    <div class="hero-card">
+      <div id="countdown-wrapper">
+        <div class="target-badge">Next Exam Countdown</div>
+        <div class="target-title" id="target-title">Loading schedule...</div>
+        <div class="target-time" id="target-time">Please wait...</div>
+
+        <div class="timer-grid">
+          <div class="timer-box">
+            <div class="timer-number" id="days">00</div>
+            <div class="timer-unit">Days</div>
+          </div>
+          <div class="timer-box">
+            <div class="timer-number" id="hours">00</div>
+            <div class="timer-unit">Hours</div>
+          </div>
+          <div class="timer-box">
+            <div class="timer-number" id="minutes">00</div>
+            <div class="timer-unit">Minutes</div>
+          </div>
+          <div class="timer-box">
+            <div class="timer-number" id="seconds">00</div>
+            <div class="timer-unit">Seconds</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="all-done-wrapper" style="display: none;">
+        <h2 style="font-size: 2rem; color: var(--accent-teal); margin-bottom: 0.5rem;">All Midterms Completed! 🎉</h2>
+        <p style="color: var(--text-muted);">Congratulations! You have successfully finished all 5 exams for BSCS Semester 3.</p>
+      </div>
+    </div>
+
+    <!-- SCHEDULE LIST -->
+    <section>
+      <div class="section-header">
+        <h2 class="section-title">Official Exam Schedule</h2>
+        <button class="btn-print" onclick="window.print()">🖨️ Print Schedule</button>
+      </div>
+      <div class="schedule-list" id="schedule-list"></div>
+    </section>
+
+    <!-- DASHBOARD TIPS CARD -->
+    <div class="tips-card">
+      <h3>📌 Exam Instructions & Strategy</h3>
+      <ul>
+        <li><strong>Time allocation:</strong> Adjust your revision schedule strictly based on the paper gaps highlighted above.</li>
+        <li>Arrive at the exam center at least 15 minutes before the scheduled start time.</li>
+        <li>Ensure you bring your official Student ID Card and Admit Slip.</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    BSCS 3rd Semester — Midterm-I, Fall 2026
+    <br>
+    <div class="developer-tag">
+      Developed by <span>SAIM ZAFAR</span> — FAST NUCES
+    </div>
+  </footer>
+
+  <script>
+    // ROTATING QUOTES
+    const quotes = [
+      { text: "Time is like sand in an hourglass; it slips away smoothly, second by second.", author: "Academic Discipline" },
+      { text: "Don't watch the clock; do what it does. Keep going.", author: "Sam Levenson" },
+      { text: "The bad news is time flies. The good news is you’re the pilot.", author: "Michael Altshuler" },
+      { text: "Adjust your work according to your time, or time will force you to adjust your results.", author: "Exam Strategy Rule" },
+      { text: "You may delay, but time will not.", author: "Benjamin Franklin" },
+      { text: "Plan your preparation around the gaps between exams — consistency beats last-minute cramming.", author: "BSCS Advisory" }
+    ];
+
+    let quoteIndex = 0;
+    function rotateQuote() {
+      const qText = document.getElementById('quote-text');
+      const qAuth = document.getElementById('quote-author');
+      qText.style.opacity = 0;
+      setTimeout(() => {
+        quoteIndex = (quoteIndex + 1) % quotes.length;
+        qText.textContent = `"${quotes[quoteIndex].text}"`;
+        qAuth.textContent = `— ${quotes[quoteIndex].author}`;
+        qText.style.opacity = 1;
+      }, 500);
+    }
+    setInterval(rotateQuote, 10000);
+
+    // EXACT EXAM SCHEDULE DATA (Timezone: PKT / UTC+5)
+    const exams = [
+      { id: 1, title: "Tarjuma-tul-Quran", day: "Saturday", dateStr: "19-Sep-2026", timeStr: "10:30 AM to 11:30 AM", startIso: "2026-09-19T10:30:00+05:00" },
+      { id: 2, title: "Discrete Structures (CS1005)", day: "Saturday", dateStr: "19-Sep-2026", timeStr: "3:30 PM to 4:30 PM", startIso: "2026-09-19T15:30:00+05:00" },
+      { id: 3, title: "Linear Algebra (MT1004)", day: "Monday", dateStr: "21-Sep-2026", timeStr: "3:30 PM to 4:30 PM", startIso: "2026-09-21T15:30:00+05:00" },
+      { id: 4, title: "Computer Organization & Assembly Language (EE2003)", day: "Tuesday", dateStr: "22-Sep-2026", timeStr: "2:00 PM to 3:00 PM", startIso: "2026-09-22T14:00:00+05:00" },
+      { id: 5, title: "Data Structures (CS2001)", day: "Wednesday", dateStr: "23-Sep-2026", timeStr: "10:30 AM to 11:30 AM", startIso: "2026-09-23T10:30:00+05:00" }
+    ];
+
+    const examData = exams.map(e => ({ ...e, startTime: new Date(e.startIso).getTime() }));
+
+    let soundEnabled = true;
+    let alarmPlayedMap = {};
+
+    function playBeepSound() {
+      if (!soundEnabled) return;
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const ctx = new AudioContext();
+        [0, 0.25, 0.5].forEach((delay) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = 880;
+          gain.gain.setValueAtTime(0.3, ctx.currentTime + delay);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.15);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + delay);
+          osc.stop(ctx.currentTime + delay + 0.15);
+        });
+      } catch (err) {}
+    }
+
+    function testAlarm() { playBeepSound(); }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      document.getElementById('sound-toggle-btn').textContent = soundEnabled ? '🔔 Alarm: ON' : '🔕 Alarm: OFF';
+    }
+
+    function formatGap(ms) {
+      const sec = Math.floor(ms / 1000);
+      const d = Math.floor(sec / 86400);
+      const h = Math.floor((sec % 86400) / 3600);
+      const m = Math.floor((sec % 3600) / 60);
+
+      let parts = [];
+      if (d > 0) parts.push(`${d}d`);
+      if (h > 0) parts.push(`${h}h`);
+      if (m > 0 || (d === 0 && h === 0)) parts.push(`${m}m`);
+      return parts.join(' ');
+    }
+
+    function renderCards() {
+      const container = document.getElementById('schedule-list');
+      container.innerHTML = '';
+
+      examData.forEach((exam, i) => {
+        const card = document.createElement('div');
+        card.className = 'exam-card';
+        card.id = `card-${i}`;
+
+        let gapHtml = '';
+        if (i < examData.length - 1) {
+          const gapMs = examData[i + 1].startTime - exam.startTime;
+          gapHtml = `<div class="exam-gap">⏳ Prep window until next paper: <strong>${formatGap(gapMs)}</strong></div>`;
+        }
+
+        card.innerHTML = `
+          <div class="badge-status" id="badge-${i}">UPCOMING</div>
+          <div class="exam-title">${exam.id}. ${exam.title}</div>
+          <div class="exam-meta">
+            <div class="meta-item">📅 ${exam.day}, ${exam.dateStr}</div>
+            <div class="meta-item">⏰ ${exam.timeStr}</div>
+          </div>
+          ${gapHtml}
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function updateDashboard() {
+      const now = new Date().getTime();
+
+      // Update Live PST Clock
+      const pstTimeStr = new Date().toLocaleTimeString('en-US', { timeZone: 'Asia/Karachi' });
+      document.getElementById('pst-clock').textContent = pstTimeStr;
+
+      const nextExam = examData.find(e => e.startTime > now);
+      const completedCount = examData.filter(e => e.startTime <= now).length;
+
+      // Update Progress Bar
+      const pct = (completedCount / examData.length) * 100;
+      document.getElementById('progress-fill').style.width = pct + '%';
+      document.getElementById('progress-text').textContent = `${completedCount} of ${examData.length} Completed (${Math.round(pct)}%)`;
+
+      // Update Cards
+      examData.forEach((exam, i) => {
+        const card = document.getElementById(`card-${i}`);
+        const badge = document.getElementById(`badge-${i}`);
+
+        if (exam.startTime <= now) {
+          card.className = 'exam-card completed';
+          badge.textContent = 'Completed ✓';
+
+          if (!alarmPlayedMap[exam.id]) {
+            alarmPlayedMap[exam.id] = true;
+            playBeepSound();
+          }
+        } else if (nextExam && exam.id === nextExam.id) {
+          card.className = 'exam-card active';
+          badge.textContent = 'NEXT';
+        } else {
+          card.className = 'exam-card';
+          badge.textContent = 'UPCOMING';
+        }
+      });
+
+      if (!nextExam) {
+        document.getElementById('countdown-wrapper').style.display = 'none';
+        document.getElementById('all-done-wrapper').style.display = 'block';
+        return;
+      }
+
+      document.getElementById('target-title').textContent = nextExam.title;
+      document.getElementById('target-time').textContent = `${nextExam.day}, ${nextExam.dateStr} at ${nextExam.timeStr.split(' to ')[0]}`;
+
+      const diff = nextExam.startTime - now;
+      const totalSeconds = Math.max(0, Math.floor(diff / 1000));
+
+      const d = Math.floor(totalSeconds / 86400);
+      const h = Math.floor((totalSeconds % 86400) / 3600);
+      const m = Math.floor((totalSeconds % 3600) / 60);
+      const s = totalSeconds % 60;
+
+      document.getElementById('days').textContent = String(d).padStart(2, '0');
+      document.getElementById('hours').textContent = String(h).padStart(2, '0');
+      document.getElementById('minutes').textContent = String(m).padStart(2, '0');
+      document.getElementById('seconds').textContent = String(s).padStart(2, '0');
+    }
+
+    // INITIALIZATION
+    renderCards();
+    updateDashboard();
+    setInterval(updateDashboard, 1000);
+  </script>
+</body>
+</html>
